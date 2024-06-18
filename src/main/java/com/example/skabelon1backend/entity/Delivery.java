@@ -1,12 +1,14 @@
 package com.example.skabelon1backend.entity;
 
-
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -21,6 +23,20 @@ public class Delivery {
     private double totalPrice;
     private double totalWeight;
 
-    @OneToMany(mappedBy = "delivery")
-    private List<ProductOrder> productOders;
+    @OneToMany(mappedBy = "delivery", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
+    private List<ProductOrder> productOrders;
+
+
+    // Helper method to add ProductOrder to Delivery
+    public void addProductOrder(ProductOrder productOrder) {
+        productOrders.add(productOrder);
+        productOrder.setDelivery(this);
+    }
+
+    // Helper method to remove ProductOrder from Delivery
+    public void removeProductOrder(ProductOrder productOrder) {
+        productOrders.remove(productOrder);
+        productOrder.setDelivery(null);
+    }
 }
