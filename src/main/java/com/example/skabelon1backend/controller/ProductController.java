@@ -28,6 +28,11 @@ public class ProductController {
         return product.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/search/{name}")
+    public List<Product> getProductsByName(@PathVariable String name) {
+        return productRepository.findByNameContaining(name);
+    }
+
     // Post method for creating a product
     @PostMapping
     public Product createProduct(@RequestBody Product product) {
