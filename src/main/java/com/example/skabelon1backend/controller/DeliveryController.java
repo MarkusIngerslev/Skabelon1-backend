@@ -44,17 +44,15 @@ public class DeliveryController {
         return deliveryRepository.save(delivery);
     }
 
-    // Add a product order to a delivery
-    @PostMapping("/{id}/productOrders")
-    public ResponseEntity<Delivery> addProductOrdersToDelivery(@PathVariable int id, @RequestBody List<ProductOrder> productOrders) {
-        Optional<Delivery> optionalDelivery = deliveryRepository.findById(id);
+    // Add a Product order to a delivery
+    @PostMapping("/{deliveryId}/productOrders")
+    public ResponseEntity<Delivery> addProductOrderToDelivery(@PathVariable int deliveryId, @RequestBody ProductOrder productOrder) {
+        Optional<Delivery> optionalDelivery = deliveryRepository.findById(deliveryId);
         if (optionalDelivery.isPresent()) {
             Delivery delivery = optionalDelivery.get();
-            for (ProductOrder order : productOrders) {
-                order.setDelivery(delivery);
-                productOrderRepository.save(order);
-            }
-            delivery.setProductOrders(productOrders);
+            productOrder.setDelivery(delivery);
+            productOrderRepository.save(productOrder);
+            delivery.addProductOrder(productOrder);
             return ResponseEntity.ok(deliveryRepository.save(delivery));
         } else {
             return ResponseEntity.notFound().build();
